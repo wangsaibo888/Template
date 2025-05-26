@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { RotateCcw, Coins } from "lucide-react"
+import { RotateCcw, Coins, Minus } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { spendOneCredit, resetCredits } from "@/app/actions/credits"
+import { toast } from "sonner"
 
 /**
  * 顶部导航栏组件属性接口
@@ -17,18 +19,39 @@ interface TopNavProps {
       full_name?: string
     }
   } | null
+  credits?: number // 当前积分数量
 }
 
 /**
  * 顶部导航栏组件
- * 显示点数、重置按钮和用户头像
+ * 显示点数、消耗点数按钮、重置按钮和用户头像
  */
-export default function TopNav({ user }: TopNavProps) {
-  const [credits, setCredits] = useState(5) // 默认5个点数
+export default function TopNav({ user, credits = 5 }: TopNavProps) {
+  const [isSpending, startSpending] = useTransition()
+  const [isResetting, startResetting] = useTransition()
 
-  // 重置点数
+  // 消耗1个积分
+  const handleSpendCredit = () => {
+    startSpending(async () => {
+      try {
+        await spendOneCredit()
+        toast.success("成功消耗1个积分")
+      } catch (error: any) {
+        toast.error(error.message || "消耗积分失败")
+      }
+    })
+  }
+
+  // 重置积分
   const handleResetCredits = () => {
-    setCredits(5)
+    startResetting(async () => {
+      try {
+        await resetCredits()
+        toast.success("积分已重置为5点")
+      } catch (error: any) {
+        toast.error(error.message || "重置积分失败")
+      }
+    })
   }
 
   // 获取用户显示名称
@@ -54,9 +77,9 @@ export default function TopNav({ user }: TopNavProps) {
         {/* 左侧留空，可以放置面包屑导航等 */}
         <div className="flex-1" />
         
-        {/* 右侧：点数显示、重置按钮、用户头像 */}
+        {/* 右侧：点数显示、操作按钮、用户头像 */}
         <div className="flex items-center space-x-4">
-          {/* 点数显示 */}
+          {/* 点数显示和操作按钮 */}
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-1 bg-accent/50 rounded-full px-3 py-1">
               <Coins className="h-4 w-4 text-amber-500" />
@@ -65,15 +88,28 @@ export default function TopNav({ user }: TopNavProps) {
               </Badge>
             </div>
             
+            {/* 消耗积分按钮 */}
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleSpendCredit}
+              disabled={isSpending || credits <= 0}
+              className="h-8 px-3"
+            >
+              <Minus className="h-3 w-3 mr-1" />
+              {isSpending ? "消耗中..." : "消耗点数"}
+            </Button>
+            
             {/* 重置按钮 */}
             <Button
               variant="outline"
               size="sm"
               onClick={handleResetCredits}
+              disabled={isResetting}
               className="h-8 px-3"
             >
               <RotateCcw className="h-3 w-3 mr-1" />
-              重置
+              {isResetting ? "重置中..." : "重置"}
             </Button>
           </div>
           

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CreditCard, Check, X } from "lucide-react";
+import { getUserCredits } from "@/app/actions/credits";
 
 /**
  * 账单页面组件
@@ -24,19 +25,28 @@ export default async function BillingPage() {
     return redirect("/sign-in");
   }
 
+  // 获取用户积分信息
+  let userCredits = null;
+  try {
+    userCredits = await getUserCredits();
+  } catch (error) {
+    console.error("获取积分失败:", error);
+    userCredits = { current_credits: 5, total_earned_credits: 5, total_spent_credits: 0 };
+  }
+
   return (
-    <div className="h-screen bg-background">
+    <div className="fixed inset-0 bg-background flex">
       {/* 侧边栏导航 */}
       <Sidebar />
       
       {/* 主内容区域 */}
-      <div className="ml-64 flex flex-col h-full">
+      <div className="ml-64 flex flex-col flex-1 overflow-hidden">
         {/* 顶部导航栏 */}
-        <TopNav user={user} />
+        <TopNav user={user} credits={userCredits?.current_credits || 5} />
         
         {/* 页面内容 */}
         <main className="flex-1 overflow-y-auto bg-background">
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6 max-w-7xl mx-auto">
             {/* 页面标题 */}
             <div>
               <h1 className="text-3xl font-bold text-foreground">

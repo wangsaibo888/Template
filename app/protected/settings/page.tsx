@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Settings, User, Bell, Shield, Trash2 } from "lucide-react";
 import { signOutAction } from "@/app/actions";
+import { getUserCredits } from "@/app/actions/credits";
 
 /**
  * 设置页面组件
@@ -27,19 +28,28 @@ export default async function SettingsPage() {
     return redirect("/sign-in");
   }
 
+  // 获取用户积分信息
+  let userCredits = null;
+  try {
+    userCredits = await getUserCredits();
+  } catch (error) {
+    console.error("获取积分失败:", error);
+    userCredits = { current_credits: 5, total_earned_credits: 5, total_spent_credits: 0 };
+  }
+
   return (
-    <div className="h-screen bg-background">
+    <div className="fixed inset-0 bg-background flex">
       {/* 侧边栏导航 */}
       <Sidebar />
       
       {/* 主内容区域 */}
-      <div className="ml-64 flex flex-col h-full">
+      <div className="ml-64 flex flex-col flex-1 overflow-hidden">
         {/* 顶部导航栏 */}
-        <TopNav user={user} />
+        <TopNav user={user} credits={userCredits?.current_credits || 5} />
         
         {/* 页面内容 */}
         <main className="flex-1 overflow-y-auto bg-background">
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6 max-w-7xl mx-auto">
             {/* 页面标题 */}
             <div>
               <h1 className="text-3xl font-bold text-foreground">
@@ -201,69 +211,87 @@ export default async function SettingsPage() {
               </CardContent>
             </Card>
 
-            {/* 账户操作 */}
+            {/* 偏好设置 */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
-                  账户操作
+                  偏好设置
                 </CardTitle>
                 <CardDescription>
-                  管理您的账户状态
+                  自定义您的使用体验
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label className="text-sm font-medium">登出账户</Label>
+                      <Label className="text-sm font-medium">主题</Label>
                       <p className="text-xs text-muted-foreground">
-                        从当前设备登出您的账户
+                        选择您喜欢的界面主题
                       </p>
                     </div>
-                    <form action={signOutAction}>
-                      <Button type="submit" variant="outline" size="sm">
-                        登出
-                      </Button>
-                    </form>
+                    <Badge variant="outline">自动</Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label className="text-sm font-medium">导出数据</Label>
+                      <Label className="text-sm font-medium">语言</Label>
                       <p className="text-xs text-muted-foreground">
-                        下载您的账户数据副本
+                        设置界面显示语言
                       </p>
                     </div>
-                    <Button variant="outline" size="sm">
-                      导出
-                    </Button>
+                    <Badge variant="outline">中文简体</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-sm font-medium">时区</Label>
+                      <p className="text-xs text-muted-foreground">
+                        设置您的时区
+                      </p>
+                    </div>
+                    <Badge variant="outline">GMT+8</Badge>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* 危险区域 */}
-            <Card className="border-destructive/50">
+            {/* 危险操作 */}
+            <Card className="border-destructive">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-destructive">
                   <Trash2 className="h-5 w-5" />
-                  危险区域
+                  危险操作
                 </CardTitle>
                 <CardDescription>
-                  这些操作无法撤销，请谨慎操作
+                  这些操作是不可逆的，请谨慎操作
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label className="text-sm font-medium text-destructive">删除账户</Label>
-                    <p className="text-xs text-muted-foreground">
-                      永久删除您的账户和所有相关数据
-                    </p>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-sm font-medium">注销登录</Label>
+                      <p className="text-xs text-muted-foreground">
+                        退出当前账户登录
+                      </p>
+                    </div>
+                    <form action={signOutAction}>
+                      <Button type="submit" variant="outline" size="sm">
+                        注销
+                      </Button>
+                    </form>
                   </div>
-                  <Button variant="destructive" size="sm">
-                    删除账户
-                  </Button>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-sm font-medium text-destructive">删除账户</Label>
+                      <p className="text-xs text-muted-foreground">
+                        永久删除您的账户和所有数据
+                      </p>
+                    </div>
+                    <Button variant="destructive" size="sm" disabled>
+                      删除账户
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

@@ -6,6 +6,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher"; // 主题切换器�
 import { hasEnvVars } from "@/utils/supabase/check-env-vars"; // 检查环境变量的工具函数
 import { Geist } from "next/font/google"; // 谷歌字体 Geist
 import { ThemeProvider } from "next-themes"; // 主题提供器
+import { Toaster } from "sonner"; // Toast 通知组件
 import "./globals.css"; // 全局CSS样式
 
 // 设置默认URL，优先使用Vercel URL，否则使用本地开发地址
@@ -69,6 +70,9 @@ export default function RootLayout({
               </footer>
             </div>
           </main>
+          
+          {/* Toast 通知组件 */}
+          <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>
     </html>

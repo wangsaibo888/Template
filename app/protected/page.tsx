@@ -5,6 +5,7 @@ import TopNav from "@/components/ui/top-nav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { InfoIcon, Users, Activity, CreditCard } from "lucide-react";
+import { getUserCredits } from "@/app/actions/credits";
 
 /**
  * 受保护的仪表板页面组件
@@ -24,19 +25,29 @@ export default async function ProtectedPage() {
     return redirect("/sign-in");
   }
 
+  // 获取用户积分信息
+  let userCredits = null;
+  try {
+    userCredits = await getUserCredits();
+  } catch (error) {
+    console.error("获取积分失败:", error);
+    // 如果获取积分失败，使用默认值
+    userCredits = { current_credits: 5, total_earned_credits: 5, total_spent_credits: 0 };
+  }
+
   return (
-    <div className="h-screen bg-background">
+    <div className="fixed inset-0 bg-background flex">
       {/* 侧边栏导航 */}
       <Sidebar />
       
       {/* 主内容区域 */}
-      <div className="ml-64 flex flex-col h-full">
+      <div className="ml-64 flex flex-col flex-1 overflow-hidden">
         {/* 顶部导航栏 */}
-        <TopNav user={user} />
+        <TopNav user={user} credits={userCredits?.current_credits || 5} />
         
         {/* 页面内容 */}
         <main className="flex-1 overflow-y-auto bg-background">
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6 max-w-7xl mx-auto">
             {/* 欢迎信息 */}
             <div className="flex items-center justify-between">
               <div>
@@ -69,18 +80,18 @@ export default async function ProtectedPage() {
 
             {/* 数据卡片网格 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* 账户信息卡片 */}
+              {/* 积分信息卡片 */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    账户状态
+                    当前积分
                   </CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">活跃</div>
+                  <div className="text-2xl font-bold">{userCredits?.current_credits || 5}</div>
                   <p className="text-xs text-muted-foreground">
-                    账户创建于 {new Date(user.created_at || '').toLocaleDateString('zh-CN')}
+                    总获得: {userCredits?.total_earned_credits || 5} | 总消耗: {userCredits?.total_spent_credits || 0}
                   </p>
                 </CardContent>
               </Card>
@@ -94,9 +105,9 @@ export default async function ProtectedPage() {
                   <Activity className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">12</div>
+                  <div className="text-2xl font-bold">{userCredits?.total_spent_credits || 0}</div>
                   <p className="text-xs text-muted-foreground">
-                    +2.5% 相比上月
+                    积分消耗统计
                   </p>
                 </CardContent>
               </Card>
