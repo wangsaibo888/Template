@@ -5,6 +5,8 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { Menu, X } from "lucide-react"
 import Link from "next/link"
+import { LanguageSwitcher, useLanguage } from "@/components/ui/language-switcher"
+import { useTranslation } from "@/lib/i18n"
 
 /**
  * 顶部导航栏组件
@@ -13,13 +15,15 @@ import Link from "next/link"
  */
 const Navbar1 = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const currentLanguage = useLanguage()
+  const { t } = useTranslation(currentLanguage)
 
   const toggleMenu = () => setIsOpen(!isOpen)
 
   // 导航菜单项配置
   const navItems = [
-    { name: "Home", href: "/" },
-    { name: "Pricing", href: "/pricing" }
+    { name: t('home'), href: "/" },
+    { name: t('pricing'), href: "/pricing" }
   ]
 
   return (
@@ -67,21 +71,32 @@ const Navbar1 = () => {
           ))}
         </nav>
 
-        {/* 桌面端开始使用按钮 */}
-        <motion.div
-          className="hidden md:block"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <Link
-            href="/sign-in"
-            className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-black dark:bg-white dark:text-black rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+        {/* 桌面端右侧按钮组 */}
+        <div className="hidden md:flex items-center space-x-3">
+          {/* 语言切换器 */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
           >
-            Get Started
-          </Link>
-        </motion.div>
+            <LanguageSwitcher compact />
+          </motion.div>
+          
+          {/* 开始使用按钮 */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <Link
+              href="/sign-in"
+              className="inline-flex items-center justify-center px-5 py-2 text-sm text-white bg-black dark:bg-white dark:text-black rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              {t('getStarted')}
+            </Link>
+          </motion.div>
+        </div>
 
         {/* 移动端菜单按钮 */}
         <motion.button className="md:hidden flex items-center" onClick={toggleMenu} whileTap={{ scale: 0.9 }}>
@@ -131,6 +146,22 @@ const Navbar1 = () => {
                 </motion.div>
               ))}
 
+              {/* 移动端语言切换器 */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="pt-4 border-t border-gray-200 dark:border-gray-700"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-gray-900 dark:text-gray-100 font-medium">
+                    {t('language')}
+                  </span>
+                  <LanguageSwitcher />
+                </div>
+              </motion.div>
+
               {/* 移动端开始使用按钮 */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -144,7 +175,7 @@ const Navbar1 = () => {
                   className="inline-flex items-center justify-center w-full px-5 py-3 text-base text-white bg-black dark:bg-white dark:text-black rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                   onClick={toggleMenu}
                 >
-                  Get Started
+                  {t('getStarted')}
                 </Link>
               </motion.div>
             </div>

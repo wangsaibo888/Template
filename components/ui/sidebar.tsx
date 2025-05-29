@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils"
 import { Home, CreditCard, Settings } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useLanguage } from "@/components/ui/language-switcher"
+import { useTranslation } from "@/lib/i18n"
 
 /**
  * 导航项接口定义
@@ -21,23 +23,25 @@ interface NavItem {
  */
 export default function Sidebar() {
   const pathname = usePathname()
+  const currentLanguage = useLanguage()
+  const { t } = useTranslation(currentLanguage)
   
   // 导航项配置
   const navigation: NavItem[] = [
     {
-      name: "Home",
+      name: t('home'),
       href: "/protected",
       icon: Home,
       current: pathname === "/protected",
     },
     {
-      name: "Billing",
+      name: t('billing'),
       href: "/protected/billing",
       icon: CreditCard,
       current: pathname === "/protected/billing",
     },
     {
-      name: "Settings",
+      name: t('settings'),
       href: "/protected/settings", 
       icon: Settings,
       current: pathname === "/protected/settings",
@@ -62,7 +66,7 @@ export default function Sidebar() {
                   </defs>
                 </svg>
               </div>
-              <span className="text-xl font-semibold text-foreground">Dashboard</span>
+              <span className="text-xl font-semibold text-foreground">{t('dashboard')}</span>
             </div>
           </div>
           

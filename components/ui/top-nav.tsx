@@ -7,6 +7,8 @@ import { RotateCcw, Coins, Minus } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { spendOneCredit, resetCredits } from "@/app/actions/credits"
 import { toast } from "sonner"
+import { useLanguage } from "@/components/ui/language-switcher"
+import { useTranslation } from "@/lib/i18n"
 
 /**
  * 顶部导航栏组件属性接口
@@ -25,19 +27,22 @@ interface TopNavProps {
 /**
  * 顶部导航栏组件
  * 显示点数、消耗点数按钮、重置按钮和用户头像
+ * 支持多语言国际化
  */
 export default function TopNav({ user, credits = 5 }: TopNavProps) {
   const [isSpending, startSpending] = useTransition()
   const [isResetting, startResetting] = useTransition()
+  const currentLanguage = useLanguage()
+  const { t } = useTranslation(currentLanguage)
 
   // 消耗1个积分
   const handleSpendCredit = () => {
     startSpending(async () => {
       try {
         await spendOneCredit()
-        toast.success("成功消耗1个积分")
+        toast.success(t('spendCreditSuccess'))
       } catch (error: any) {
-        toast.error(error.message || "消耗积分失败")
+        toast.error(error.message || t('spendCreditError'))
       }
     })
   }
@@ -47,9 +52,9 @@ export default function TopNav({ user, credits = 5 }: TopNavProps) {
     startResetting(async () => {
       try {
         await resetCredits()
-        toast.success("积分已重置为5点")
+        toast.success(t('resetCreditSuccess'))
       } catch (error: any) {
-        toast.error(error.message || "重置积分失败")
+        toast.error(error.message || t('resetCreditError'))
       }
     })
   }
@@ -62,7 +67,7 @@ export default function TopNav({ user, credits = 5 }: TopNavProps) {
     if (user?.email) {
       return user.email.split('@')[0]
     }
-    return "用户"
+    return t('user')
   }
 
   // 获取用户头像初始字母
@@ -84,7 +89,7 @@ export default function TopNav({ user, credits = 5 }: TopNavProps) {
             <div className="flex items-center space-x-1 bg-accent/50 rounded-full px-3 py-1">
               <Coins className="h-4 w-4 text-amber-500" />
               <Badge variant="secondary" className="text-sm font-medium">
-                {credits} 点
+                {credits} {t('points')}
               </Badge>
             </div>
             
@@ -97,7 +102,7 @@ export default function TopNav({ user, credits = 5 }: TopNavProps) {
               className="h-8 px-3"
             >
               <Minus className="h-3 w-3 mr-1" />
-              {isSpending ? "消耗中..." : "消耗点数"}
+              {isSpending ? t('spending') : t('spendCredits')}
             </Button>
             
             {/* 重置按钮 */}
@@ -109,7 +114,7 @@ export default function TopNav({ user, credits = 5 }: TopNavProps) {
               className="h-8 px-3"
             >
               <RotateCcw className="h-3 w-3 mr-1" />
-              {isResetting ? "重置中..." : "重置"}
+              {isResetting ? t('resetting') : t('reset')}
             </Button>
           </div>
           
