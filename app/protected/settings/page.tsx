@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Settings, User, Bell, Shield, Trash2 } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { signOutAction } from "@/app/actions";
 import { getUserCredits } from "@/app/actions/credits";
 
@@ -56,7 +56,7 @@ export default async function SettingsPage() {
                 账户设置
               </h1>
               <p className="text-muted-foreground mt-1">
-                管理您的账户信息和偏好设置
+                管理您的账户信息
               </p>
             </div>
 
@@ -68,7 +68,7 @@ export default async function SettingsPage() {
                   个人信息
                 </CardTitle>
                 <CardDescription>
-                  更新您的个人资料信息
+                  查看您的个人资料信息
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -117,181 +117,31 @@ export default async function SettingsPage() {
               </CardContent>
             </Card>
 
-            {/* 通知设置 */}
+            {/* 退出登录 */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Bell className="h-5 w-5" />
-                  通知设置
+                  <LogOut className="h-5 w-5" />
+                  账户操作
                 </CardTitle>
                 <CardDescription>
-                  管理您接收通知的方式
+                  退出当前账户登录
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">邮件通知</Label>
-                      <p className="text-xs text-muted-foreground">
-                        接收重要更新和通知邮件
-                      </p>
-                    </div>
-                    <Badge variant="outline">已启用</Badge>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm font-medium">退出登录</Label>
+                    <p className="text-xs text-muted-foreground">
+                      安全退出当前账户，您需要重新登录才能访问
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">营销邮件</Label>
-                      <p className="text-xs text-muted-foreground">
-                        接收产品更新和优惠信息
-                      </p>
-                    </div>
-                    <Badge variant="secondary">已禁用</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">安全通知</Label>
-                      <p className="text-xs text-muted-foreground">
-                        账户安全相关的重要通知
-                      </p>
-                    </div>
-                    <Badge variant="outline">已启用</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 安全设置 */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  安全设置
-                </CardTitle>
-                <CardDescription>
-                  管理您的账户安全
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">密码</Label>
-                      <p className="text-xs text-muted-foreground">
-                        最后更新：{new Date(user.updated_at || '').toLocaleDateString('zh-CN')}
-                      </p>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      修改密码
+                  <form action={signOutAction}>
+                    <Button type="submit" variant="outline" className="flex items-center gap-2">
+                      <LogOut className="h-4 w-4" />
+                      退出登录
                     </Button>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">两步验证</Label>
-                      <p className="text-xs text-muted-foreground">
-                        为您的账户添加额外安全保护
-                      </p>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      启用
-                    </Button>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">会话管理</Label>
-                      <p className="text-xs text-muted-foreground">
-                        管理您的登录会话
-                      </p>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      查看会话
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 偏好设置 */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  偏好设置
-                </CardTitle>
-                <CardDescription>
-                  自定义您的使用体验
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">主题</Label>
-                      <p className="text-xs text-muted-foreground">
-                        选择您喜欢的界面主题
-                      </p>
-                    </div>
-                    <Badge variant="outline">自动</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">语言</Label>
-                      <p className="text-xs text-muted-foreground">
-                        设置界面显示语言
-                      </p>
-                    </div>
-                    <Badge variant="outline">中文简体</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">时区</Label>
-                      <p className="text-xs text-muted-foreground">
-                        设置您的时区
-                      </p>
-                    </div>
-                    <Badge variant="outline">GMT+8</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 危险操作 */}
-            <Card className="border-destructive">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-destructive">
-                  <Trash2 className="h-5 w-5" />
-                  危险操作
-                </CardTitle>
-                <CardDescription>
-                  这些操作是不可逆的，请谨慎操作
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium">注销登录</Label>
-                      <p className="text-xs text-muted-foreground">
-                        退出当前账户登录
-                      </p>
-                    </div>
-                    <form action={signOutAction}>
-                      <Button type="submit" variant="outline" size="sm">
-                        注销
-                      </Button>
-                    </form>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium text-destructive">删除账户</Label>
-                      <p className="text-xs text-muted-foreground">
-                        永久删除您的账户和所有数据
-                      </p>
-                    </div>
-                    <Button variant="destructive" size="sm" disabled>
-                      删除账户
-                    </Button>
-                  </div>
+                  </form>
                 </div>
               </CardContent>
             </Card>
