@@ -50,7 +50,7 @@ export default function RootLayout({
           <main className="min-h-screen flex flex-col items-center">
             <div className="flex-1 w-full flex flex-col gap-20 items-center">
               {/* 页面内容 - 现在由各个布局组件负责具体结构 */}
-              {children}
+                {children}
 
               {/* 页脚区域 */}
               <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">

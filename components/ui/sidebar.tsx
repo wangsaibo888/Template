@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils"
 import { Home, CreditCard, Settings } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useLanguage } from "@/components/ui/language-switcher"
 import { useTranslation } from "@/lib/i18n"
@@ -56,15 +57,12 @@ export default function Sidebar() {
           <div className="flex flex-shrink-0 items-center px-4">
             <div className="flex items-center">
               <div className="w-8 h-8 mr-3">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="16" cy="16" r="16" fill="url(#paint0_linear)" />
-                  <defs>
-                    <linearGradient id="paint0_linear" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#FF9966" />
-                      <stop offset="1" stopColor="#FF5E62" />
-                    </linearGradient>
-                  </defs>
-                </svg>
+                <Image
+                  src="/logos/logo.svg"
+                  alt="Logo"
+                  width={32}
+                  height={32}
+                />
               </div>
               <span className="text-xl font-semibold text-foreground">{t('dashboard')}</span>
             </div>

@@ -6,6 +6,7 @@ import { LanguageCode } from "@/components/ui/language-switcher"
 export interface Translations {
   // 导航栏
   home: string
+  product: string
   pricing: string
   getStarted: string
   language: string
@@ -159,6 +160,7 @@ export const translations: Record<LanguageCode, Translations> = {
   zh: {
     // 导航栏
     home: "首页",
+    product: "产品",
     pricing: "价格",
     getStarted: "开始使用",
     language: "语言",
@@ -308,6 +310,7 @@ export const translations: Record<LanguageCode, Translations> = {
   en: {
     // 导航栏
     home: "Home",
+    product: "Product",
     pricing: "Pricing",
     getStarted: "Get Started",
     language: "Language",
@@ -457,6 +460,7 @@ export const translations: Record<LanguageCode, Translations> = {
   ja: {
     // 导航栏
     home: "ホーム",
+    product: "製品",
     pricing: "料金",
     getStarted: "始める",
     language: "言語",
