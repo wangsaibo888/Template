@@ -9,29 +9,27 @@ import { GoogleAuthButton } from "@/components/ui/google-auth-button";
 import { useLanguage } from "@/components/ui/language-switcher";
 import { useTranslation } from "@/lib/i18n";
 import Link from "next/link";
-import React from "react";
+import { useSearchParams } from "next/navigation";
 
-interface LoginProps {
-  searchParams: Promise<Message>;
-}
-
-export default function Login({ searchParams }: LoginProps) {
+export default function Login() {
+  const searchParams = useSearchParams();
   const currentLanguage = useLanguage();
   const { t } = useTranslation(currentLanguage);
 
-  return (
-    <LoginClient searchParams={searchParams} />
-  );
-}
+  // 从URL查询参数中获取错误或成功消息
+  const error = searchParams?.get('error');
+  const success = searchParams?.get('success');
+  const message = searchParams?.get('message');
 
-function LoginClient({ searchParams }: LoginProps) {
-  const currentLanguage = useLanguage();
-  const { t } = useTranslation(currentLanguage);
-  const [searchParamsResolved, setSearchParamsResolved] = React.useState<Message | null>(null);
-
-  React.useEffect(() => {
-    searchParams.then(setSearchParamsResolved);
-  }, [searchParams]);
+  // 构建消息对象
+  let messageObj: Message | undefined;
+  if (error) {
+    messageObj = { error };
+  } else if (success) {
+    messageObj = { success };
+  } else if (message) {
+    messageObj = { message };
+  }
 
   return (
     <div className="flex-1 flex flex-col min-w-64">
@@ -65,7 +63,7 @@ function LoginClient({ searchParams }: LoginProps) {
         <SubmitButton pendingText={t('loggingIn')} formAction={signInAction}>
           {t('emailLogin')}
         </SubmitButton>
-        {searchParamsResolved && <FormMessage message={searchParamsResolved} />}
+        {messageObj && <FormMessage message={messageObj} />}
       </form>
 
       {/* 分割线 */}

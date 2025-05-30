@@ -17,13 +17,26 @@ export default function Signup() {
   const currentLanguage = useLanguage();
   const { t } = useTranslation(currentLanguage);
   
+  // 从URL查询参数中获取错误、成功或其他消息
+  const error = searchParams?.get('error');
+  const success = searchParams?.get('success');
   const message = searchParams?.get('message');
-  const messageObj = message ? { message } : undefined;
 
-  if (message) {
+  // 构建消息对象
+  let messageObj: Message | undefined;
+  if (error) {
+    messageObj = { error };
+  } else if (success) {
+    messageObj = { success };
+  } else if (message) {
+    messageObj = { message };
+  }
+
+  // 如果有任何消息，显示消息页面
+  if (messageObj) {
     return (
       <div className="w-full flex-1 flex items-center h-screen sm:max-w-md justify-center gap-2 p-4">
-        <FormMessage message={messageObj as Message} />
+        <FormMessage message={messageObj} />
       </div>
     );
   }
@@ -39,23 +52,8 @@ export default function Signup() {
           </Link>
         </p>
         
-        {/* Google 一键注册 */}
-        <div className="mt-6">
-          <GoogleAuthButton />
-        </div>
-        
-        {/* 分割线 */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">{t('or')}</span>
-          </div>
-        </div>
-
         {/* 邮箱密码注册表单 */}
-        <form className="flex flex-col gap-2 [&>input]:mb-3">
+        <form className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <Label htmlFor="email">{t('email')}</Label>
           <Input name="email" placeholder="your@example.com" required />
           <Label htmlFor="password">{t('password')}</Label>
@@ -73,8 +71,22 @@ export default function Signup() {
           <SubmitButton formAction={signUpAction} pendingText={t('registering')}>
             {t('emailRegister')}
           </SubmitButton>
-          <FormMessage message={messageObj as Message} />
         </form>
+
+        {/* 分割线 */}
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">{t('or')}</span>
+          </div>
+        </div>
+
+        {/* Google 一键注册 */}
+        <div>
+          <GoogleAuthButton />
+        </div>
       </div>
       <SmtpMessage />
     </>
